@@ -9,7 +9,35 @@ public interface DocumentRepositoryIntegrationClient {
      * @param path
      * @param sourceFile
      */
-    void saveOrUpdateDocument(String path, InputStream sourceFile);
+    void addNewFile(String path, InputStream sourceFile);
+
+    /**
+     * @param path
+     * @param sourceFile
+     */
+    void updateFile(String path, InputStream sourceFile);
+
+    /**
+     *
+     * @param oldPath
+     * @param newPath
+     * @param fileName
+     */
+    void moveFile(String oldPath, String newPath,String fileName);
+
+    /**
+     *
+     * @param path
+     * @param oldFileName
+     * @param newFileName
+     */
+    void renameFile(String path,String oldFileName, String newFileName);
+
+    /**
+     * @param path
+     * @param fileName
+     */
+    void deleteFile(String path, String fileName);
 
     /**
      * Adds a folder with specified name
@@ -51,10 +79,9 @@ public interface DocumentRepositoryIntegrationClient {
     void renameFolder(String oldPath, String path);
 
     /**
-     * Remove document
-     *
-     * @param path
+     * @param oldPath
+     * @param newPath
      */
-    void removeDocument(String path);
+    void moveFolder(String oldPath, String newPath);
 
 }

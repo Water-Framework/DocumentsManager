@@ -38,19 +38,19 @@ public class DocumentServiceImpl extends BaseEntityServiceImpl<Document> impleme
 
     @AllowGenericPermissions(actions = CrudActions.FIND)
     @Override
-    public InputStream fetchDocumentContent(long documentId) {
+    public Document fetchDocumentContent(long documentId) {
         return systemService.fetchDocumentContent(documentId);
     }
 
     @AllowGenericPermissions(actions = CrudActions.FIND)
     @Override
-    public InputStream fetchDocumentContentByPath(String path) {
-        return systemService.fetchDocumentContentByPath(path);
+    public Document fetchDocumentContentByPath(String path, String fileName) {
+        return systemService.fetchDocumentContentByPath(path, fileName);
     }
 
     @AllowGenericPermissions(actions = CrudActions.FIND)
     @Override
-    public InputStream fetchDocumentContentByUID(String documentUID) {
+    public Document fetchDocumentContentByUID(String documentUID) {
         return systemService.fetchDocumentContentByUID(documentUID);
     }
 }

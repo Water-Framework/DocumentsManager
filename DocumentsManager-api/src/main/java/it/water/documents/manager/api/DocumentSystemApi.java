@@ -14,26 +14,26 @@ public interface DocumentSystemApi extends BaseEntitySystemApi<Document> {
 
     /**
      * Retrieve document content
-     *
+     * Input Stream field will be filled with the file content
      * @param documentId
      * @return
      */
-    InputStream fetchDocumentContent(long documentId);
+    Document fetchDocumentContent(long documentId);
 
     /**
      * Retrieve document content by path
-     *
+     * Input Stream field will be filled with the file content
      * @param path
      * @return
      */
-    InputStream fetchDocumentContentByPath(String path);
+    Document fetchDocumentContentByPath(String path,String fileName);
 
     /**
      * Retrieve document content by document uid
-     *
+     * Input Stream field will be filled with the file content
      * @param documentUID
      * @return
      */
-    InputStream fetchDocumentContentByUID(String documentUID);
+    Document fetchDocumentContentByUID(String documentUID);
 
 }

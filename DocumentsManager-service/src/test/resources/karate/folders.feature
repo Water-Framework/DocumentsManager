@@ -1,7 +1,7 @@
 # Generated with Water Generator
 # The Goal of feature test is to ensure the correct format of json responses
 # If you want to perform functional test please refer to ApiTest
-Feature: Check Role Rest Api Response
+Feature: Check Folders Rest Api Response
 
   Scenario: Folders CRUD Operations
 
@@ -9,7 +9,7 @@ Feature: Check Role Rest Api Response
     And header Accept = 'application/json'
     Given url serviceBaseUrl+'/water/documents/folders'
     # ---- Add entity fields here -----
-    And request { "path": "/firstPath"}
+    And request { "path": "/firstPath" }
     # ---------------------------------
     When method POST
     Then status 200
@@ -20,8 +20,7 @@ Feature: Check Role Rest Api Response
         "entityVersion":1,
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
-        "path": "/firstPath",
-        "children":[]
+        "path": "/firstPath"
        }
     """
     * def entityId = response.id
@@ -43,8 +42,7 @@ Feature: Check Role Rest Api Response
         "entityVersion":2,
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
-        "path": "/rootPath",
-        "children":[]
+        "path": "/rootPath"
        }
     """
   
@@ -63,8 +61,7 @@ Feature: Check Role Rest Api Response
         "entityVersion":2,
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
-        "path": "/rootPath",
-        "children":[]
+        "path": "/rootPath"
        }
     """
     

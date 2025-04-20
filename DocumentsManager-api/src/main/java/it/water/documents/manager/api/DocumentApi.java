@@ -18,7 +18,7 @@ public interface DocumentApi extends BaseEntityApi<Document> {
      * @param documentId
      * @return
      */
-    InputStream fetchDocumentContent(long documentId);
+    Document fetchDocumentContent(long documentId);
 
     /**
      * Retrieve document content by path
@@ -26,7 +26,7 @@ public interface DocumentApi extends BaseEntityApi<Document> {
      * @param path
      * @return
      */
-    InputStream fetchDocumentContentByPath(String path);
+    Document fetchDocumentContentByPath(String path,String fileName);
 
     /**
      * Retrieve document content by document uid
@@ -34,6 +34,6 @@ public interface DocumentApi extends BaseEntityApi<Document> {
      * @param documentUID
      * @return
      */
-    InputStream fetchDocumentContentByUID(String documentUID);
+    Document fetchDocumentContentByUID(String documentUID);
 
 }

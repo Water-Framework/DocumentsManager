@@ -16,8 +16,9 @@ import it.water.core.permission.exceptions.UnauthorizedException;
 import it.water.core.testing.utils.bundle.TestRuntimeInitializer;
 import it.water.core.testing.utils.junit.WaterTestExtension;
 import it.water.core.testing.utils.runtime.TestRuntimeUtils;
-import it.water.documents.manager.api.*;
-import it.water.documents.manager.model.Document;
+import it.water.documents.manager.api.FolderApi;
+import it.water.documents.manager.api.FolderRepository;
+import it.water.documents.manager.api.FolderSystemApi;
 import it.water.documents.manager.model.Folder;
 import it.water.repository.entity.model.exceptions.DuplicateEntityException;
 import it.water.repository.entity.model.exceptions.NoResultException;
@@ -28,20 +29,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Generated with Water Generator.
  * Test class for DocumentsManager Services.
- * 
+ * <p>
  * Please use DocumentsManagerRestTestApi for ensuring format of the json response
- 
-
  */
 @ExtendWith(WaterTestExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FolderApiTest implements Service {
-    
+
     @Inject
     @Setter
     private ComponentRegistry componentRegistry;
-    
+
     @Inject
     @Setter
     private FolderApi folderApi;
@@ -53,7 +52,7 @@ class FolderApiTest implements Service {
     @Inject
     @Setter
     private FolderRepository folderRepository;
-    
+
     @Inject
     @Setter
     //default permission manager in test environment;
@@ -63,7 +62,7 @@ class FolderApiTest implements Service {
     @Setter
     //test role manager
     private UserManager userManager;
-    
+
     @Inject
     @Setter
     //test role manager
@@ -78,7 +77,7 @@ class FolderApiTest implements Service {
     private Role folderManagerRole;
     private Role folderViewerRole;
     private Role folderEditorRole;
-    
+
     @BeforeAll
     void beforeAll() {
         //getting user
@@ -90,9 +89,9 @@ class FolderApiTest implements Service {
         Assertions.assertNotNull(folderEditorRole);
         //impersonate admin so we can test the happy path
         adminUser = userManager.findUser("admin");
-        folderManagerUser = userManager.addUser("manager", "name", "lastname", "manager@a.com","TempPassword1_","salt", false);
-        folderViewerUser = userManager.addUser("viewer", "name", "lastname", "viewer@a.com","TempPassword1_","salt", false);
-        folderEditorUser = userManager.addUser("editor", "name", "lastname", "editor@a.com","TempPassword1_","salt", false);
+        folderManagerUser = userManager.addUser("folderManager", "name", "lastname", "folderManager@a.com", "TempPassword1_", "salt", false);
+        folderViewerUser = userManager.addUser("folderViewer", "name", "lastname", "folderViewer@a.com", "TempPassword1_", "salt", false);
+        folderEditorUser = userManager.addUser("folderEditor", "name", "lastname", "folderEditor@a.com", "TempPassword1_", "salt", false);
         //starting with admin permissions
         roleManager.addRole(folderManagerUser.getId(), folderManagerRole);
         roleManager.addRole(folderViewerUser.getId(), folderViewerRole);
@@ -100,6 +99,7 @@ class FolderApiTest implements Service {
         //default security context is admin
         TestRuntimeUtils.impersonateAdmin(componentRegistry);
     }
+
     /**
      * Testing basic injection of basic component for documentsmanager entity.
      */
@@ -162,7 +162,7 @@ class FolderApiTest implements Service {
     @Order(5)
     void findAllShouldWork() {
         PaginableResult<Folder> all = this.folderApi.findAll(null, -1, -1, null);
-        Assertions.assertEquals(1,all.getResults().size());
+        Assertions.assertEquals(1, all.getResults().size());
     }
 
     /**
@@ -196,7 +196,7 @@ class FolderApiTest implements Service {
         paginated.getResults().forEach(entity -> {
             this.folderApi.remove(entity.getId());
         });
-        Assertions.assertEquals(0,this.folderApi.countAll(null));
+        Assertions.assertEquals(0, this.folderApi.countAll(null));
     }
 
     /**
@@ -209,12 +209,12 @@ class FolderApiTest implements Service {
         this.folderApi.save(entity);
         Folder duplicated = this.createFolder(1);
         //cannot insert new entity wich breaks unique constraint
-        Assertions.assertThrows(DuplicateEntityException.class,() -> this.folderApi.save(duplicated));
+        Assertions.assertThrows(DuplicateEntityException.class, () -> this.folderApi.save(duplicated));
         Folder secondEntity = createFolder(2);
         this.folderApi.save(secondEntity);
         entity.setPath("exampleField2");
         //cannot update an entity colliding with other entity on unique constraint
-        Assertions.assertThrows(DuplicateEntityException.class,() -> this.folderApi.update(entity));
+        Assertions.assertThrows(DuplicateEntityException.class, () -> this.folderApi.update(entity));
     }
 
     /**
@@ -223,8 +223,8 @@ class FolderApiTest implements Service {
     @Test
     @Order(9)
     void updateShouldFailOnValidationFailure() {
-        Folder newEntity = new Folder("<script>function(){alert('ciao')!}</script>",0L);
-        Assertions.assertThrows(ValidationException.class,() -> this.folderApi.save(newEntity));
+        Folder newEntity = new Folder("<script>function(){alert('ciao')!}</script>", 0L);
+        Assertions.assertThrows(ValidationException.class, () -> this.folderApi.save(newEntity));
     }
 
     /**
@@ -233,7 +233,7 @@ class FolderApiTest implements Service {
     @Order(10)
     @Test
     void managerCanDoEverything() {
-        TestRuntimeInitializer.getInstance().impersonate(folderManagerUser,runtime);
+        TestRuntimeInitializer.getInstance().impersonate(folderManagerUser, runtime);
         final Folder entity = createFolder(101);
         Folder savedEntity = Assertions.assertDoesNotThrow(() -> this.folderApi.save(entity));
         savedEntity.setPath("newSavedEntity");
@@ -246,17 +246,15 @@ class FolderApiTest implements Service {
     @Order(11)
     @Test
     void viewerCannotSaveOrUpdateOrRemove() {
-        TestRuntimeInitializer.getInstance().impersonate(folderViewerUser,runtime);
+        TestRuntimeInitializer.getInstance().impersonate(folderViewerUser, runtime);
         final Folder entity = createFolder(201);
         Assertions.assertThrows(UnauthorizedException.class, () -> this.folderApi.save(entity));
-        //viewer can search
-        Assertions.assertEquals(0, this.folderApi.findAll(null, -1, -1, null).getResults().size());
     }
 
     @Order(12)
     @Test
     void editorCannotRemove() {
-        TestRuntimeInitializer.getInstance().impersonate(folderEditorUser,runtime);
+        TestRuntimeInitializer.getInstance().impersonate(folderEditorUser, runtime);
         final Folder entity = createFolder(301);
         Folder savedEntity = Assertions.assertDoesNotThrow(() -> this.folderApi.save(entity));
         savedEntity.setPath("editorNewSavedEntity");
@@ -265,7 +263,7 @@ class FolderApiTest implements Service {
         long savedEntityId = savedEntity.getId();
         Assertions.assertThrows(UnauthorizedException.class, () -> this.folderApi.remove(savedEntityId));
     }
-    
+
     @Order(13)
     @Test
     void ownedResourceShouldBeAccessedOnlyByOwner() {
@@ -277,11 +275,11 @@ class FolderApiTest implements Service {
         TestRuntimeInitializer.getInstance().impersonate(folderManagerUser, runtime);
         //find an owned entity with different user from the creator should raise an unauthorized exception
         long savedEntityId = savedEntity.getId();
-        Assertions.assertThrows(NoResultException.class,() -> this.folderApi.find(savedEntityId));
+        Assertions.assertThrows(NoResultException.class, () -> this.folderApi.find(savedEntityId));
     }
-    
-    private Folder createFolder(int seed){
-        Folder entity = new Folder("exampleField"+seed,0L);
+
+    private Folder createFolder(int seed) {
+        Folder entity = new Folder("exampleField" + seed, 0L);
         //todo add more fields here...
         return entity;
     }

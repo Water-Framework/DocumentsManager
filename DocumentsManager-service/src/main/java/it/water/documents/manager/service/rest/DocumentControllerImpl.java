@@ -55,13 +55,18 @@ public class DocumentControllerImpl extends BaseEntityRestApi<Document> implemen
     }
 
     @Override
-    public Response fetchContent(long id) {
-        Document d = documentApi.find(id);
-        InputStream inputStream = documentApi.fetchDocumentContent(id);
-        return Response.ok(inputStream)
-                .header("Content-Disposition", "attachment; filename=\"" + d.getFileName() + "\"")
-                .header("Content-Type", d.getContentType())
-                .build();
+    public Object fetchContent(String path, String fileName) {
+        return prepareDownload(documentApi.fetchDocumentContentByPath(path, fileName));
+    }
+
+    @Override
+    public Object fetchContent(long documentId) {
+        return prepareDownload(documentApi.fetchDocumentContent(documentId));
+    }
+
+    @Override
+    public Object fetchContent(String documentUID) {
+        return prepareDownload(documentApi.fetchDocumentContentByUID(documentUID));
     }
 
     @Override
@@ -93,5 +98,18 @@ public class DocumentControllerImpl extends BaseEntityRestApi<Document> implemen
         if (inputStream != null) {
             document.setDocumentContentInputStream(inputStream);
         }
+    }
+
+    /**
+     * This method can be overridden in order to support specific download logic default is jaxrs
+     * @param document
+     * @return
+     */
+    protected Object prepareDownload(Document document) {
+        InputStream inputStream = document.getDocumentContentInputStream();
+        return Response.ok(inputStream)
+                .header("Content-Disposition", "attachment; filename=\"" + document.getFileName() + "\"")
+                .header("Content-Type", document.getContentType())
+                .build();
     }
 }

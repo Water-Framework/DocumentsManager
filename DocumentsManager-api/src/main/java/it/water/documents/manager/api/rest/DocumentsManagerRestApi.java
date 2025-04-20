@@ -57,7 +57,7 @@ public interface DocumentsManagerRestApi extends RestApi {
             @ApiResponse(code = 422, message = "Duplicated Entity"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    Document update(@Multipart(Document.DOCUMENT_ENTITY_HTTP_PART_NAME) Document document,@Multipart(Document.DOCUMENT_CONTENT_HTTP_PART_NAME) InputStream file);
+    Document update(@Multipart(Document.DOCUMENT_ENTITY_HTTP_PART_NAME) Document document,@Multipart(value = Document.DOCUMENT_CONTENT_HTTP_PART_NAME,required = false) InputStream file);
 
 
     @LoggedIn
@@ -77,10 +77,12 @@ public interface DocumentsManagerRestApi extends RestApi {
     Document find(@PathParam("id") long id);
 
     @LoggedIn
-    @Path("/content/{id}")
+    @Path("/content")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @GET
     @JsonView(WaterJsonView.Public.class)
-    @ApiOperation(value = "/{id}", notes = "Document Fetch Document Content API", httpMethod = "GET", produces = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/content", notes = "Fetch Document Content API", httpMethod = "GET", produces = MediaType.APPLICATION_OCTET_STREAM)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful operation"),
             @ApiResponse(code = 401, message = "Not authorized"),
@@ -88,7 +90,42 @@ public interface DocumentsManagerRestApi extends RestApi {
             @ApiResponse(code = 422, message = "Duplicated Entity"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    Response fetchContent(@PathParam("id") long id);
+    //returning Object to be cross framework and cross technology
+    Object fetchContent(@QueryParam("path") String path, @QueryParam("fileName") String fileName);
+
+    @LoggedIn
+    @Path("/content/id/{documentId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @GET
+    @JsonView(WaterJsonView.Public.class)
+    @ApiOperation(value = "/content/id/{documentId}", notes = "Fetch Document Content API using document id", httpMethod = "GET", produces = MediaType.APPLICATION_OCTET_STREAM)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful operation"),
+            @ApiResponse(code = 401, message = "Not authorized"),
+            @ApiResponse(code = 409, message = "Validation Failed"),
+            @ApiResponse(code = 422, message = "Duplicated Entity"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    //returning Object to be cross framework and cross technology
+    Object fetchContent(@PathParam("documentId") long documentId);
+
+    @LoggedIn
+    @Path("/content/uid/{documentUID}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @GET
+    @JsonView(WaterJsonView.Public.class)
+    @ApiOperation(value = "/content/uid/{documentUID}", notes = "Fetch Document Content API using document UID", httpMethod = "GET", produces = MediaType.APPLICATION_OCTET_STREAM)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful operation"),
+            @ApiResponse(code = 401, message = "Not authorized"),
+            @ApiResponse(code = 409, message = "Validation Failed"),
+            @ApiResponse(code = 422, message = "Duplicated Entity"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    //returning Object to be cross framework and cross technology
+    Object fetchContent(@PathParam("documentUID") String documentUID);
 
 
     @LoggedIn

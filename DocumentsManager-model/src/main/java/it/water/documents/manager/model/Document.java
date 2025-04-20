@@ -24,7 +24,7 @@ import java.io.InputStream;
  */
 //JPA
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"path", "fileName"})) //example of unique constraint
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"path", "fileName"})})
 @Access(AccessType.FIELD)
 //Lombok
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,7 +32,7 @@ import java.io.InputStream;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @ToString
-@EqualsAndHashCode(of = {"id", "path"})
+@EqualsAndHashCode(of = {"id", "path", "filename"})
 //Actions and default roles access
 @AccessControl(availableActions = {CrudActions.SAVE, CrudActions.UPDATE, CrudActions.FIND, CrudActions.FIND_ALL, CrudActions.REMOVE},
         rolesPermissions = {
@@ -55,7 +55,6 @@ public class Document extends AbstractJpaEntity implements ProtectedEntity, Shar
     @NotNull
     @NotNullOnPersist
     @NonNull
-    @Setter
     @JsonView(WaterJsonView.Extended.class)
     private String path;
 
@@ -94,4 +93,17 @@ public class Document extends AbstractJpaEntity implements ProtectedEntity, Shar
     @Transient
     @JsonIgnore
     private InputStream documentContentInputStream;
+
+    @SuppressWarnings("java:S2637")
+    public void setPath(String path) {
+        if (path != null && path.endsWith("/"))
+            path = path.substring(0, path.length() - 1);
+        this.path = path;
+    }
+
+    @Transient
+    @JsonIgnore
+    public String getFullPath() {
+        return this.path + "/" + this.fileName;
+    }
 }

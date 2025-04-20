@@ -1,7 +1,7 @@
 package it.water.documents.manager;
 
-import it.water.core.interceptors.annotations.FrameworkComponent;
 import it.water.documents.manager.api.integration.DocumentRepositoryIntegrationClient;
+import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@FrameworkComponent
+@Service
 public class FakeDocumentRepositoryIntegrationClient implements DocumentRepositoryIntegrationClient {
 
     private final Map<String, byte[]> storage = new ConcurrentHashMap<>();
@@ -94,5 +94,4 @@ public class FakeDocumentRepositoryIntegrationClient implements DocumentReposito
                     storage.remove(entry.getKey());
                 });
     }
-
 }

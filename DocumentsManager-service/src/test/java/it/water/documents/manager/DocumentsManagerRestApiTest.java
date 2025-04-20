@@ -9,11 +9,13 @@ import it.water.core.interceptors.annotations.Inject;
 import it.water.core.testing.utils.junit.WaterTestExtension;
 import it.water.core.testing.utils.bundle.TestRuntimeInitializer;
 import it.water.core.testing.utils.runtime.TestRuntimeUtils;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
 
 @ExtendWith(WaterTestExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DocumentsManagerRestApiTest implements Service {
 
     @Inject

@@ -22,6 +22,7 @@ import it.water.core.api.service.rest.FrameworkRestApi;
 import it.water.core.api.service.rest.WaterJsonView;
 import it.water.documents.manager.api.rest.DocumentsManagerRestApi;
 import it.water.documents.manager.model.Document;
+import it.water.documents.manager.model.Folder;
 import it.water.service.rest.api.security.LoggedIn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,4 +62,48 @@ public interface DocumentsManagerSpringRestApi extends DocumentsManagerRestApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @JsonView(WaterJsonView.Public.class)
     void remove(@PathVariable("id") long id);
+
+    @LoggedIn
+    @PostMapping("/folders")
+    @JsonView(WaterJsonView.Public.class)
+    Folder saveFolder(@RequestBody Folder folder);
+
+
+    @LoggedIn
+    @PutMapping("/folders")
+    @JsonView(WaterJsonView.Public.class)
+    Folder updateFolder(@RequestBody Folder folder);
+
+
+    @LoggedIn
+    @GetMapping("/folders/{id}")
+    @JsonView(WaterJsonView.Public.class)
+    Folder findFolder(@PathVariable("id") long id);
+
+    @LoggedIn
+    @GetMapping(value = "/content", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @JsonView(WaterJsonView.Public.class)
+    void fetchContentStream(@RequestParam("path") String path, @RequestParam("fileName") String fileName);
+
+    @LoggedIn
+    @GetMapping(value = "/content/id/{documentId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @JsonView(WaterJsonView.Public.class)
+    void fetchContentStream(@PathVariable("documentId") long documentId);
+
+    @LoggedIn
+    @GetMapping(value = "/content/uid/{documentUID}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @JsonView(WaterJsonView.Public.class)
+    void fetchContentStream(@PathVariable("documentUID") String documentUID);
+
+    @LoggedIn
+    @GetMapping("/folders")
+    @JsonView(WaterJsonView.Public.class)
+    PaginableResult<Folder> findAllFolders();
+
+
+    @LoggedIn
+    @DeleteMapping("/folders/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @JsonView(WaterJsonView.Public.class)
+    void removeFolder(@PathVariable("id") long id);
 }

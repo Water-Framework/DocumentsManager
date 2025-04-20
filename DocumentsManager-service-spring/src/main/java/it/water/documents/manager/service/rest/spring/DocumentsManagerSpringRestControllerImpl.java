@@ -4,13 +4,20 @@ import it.water.core.api.model.PaginableResult;
 import it.water.core.api.repository.query.Query;
 import it.water.core.api.repository.query.QueryOrder;
 import it.water.core.model.exceptions.WaterRuntimeException;
+import it.water.documents.manager.api.DocumentApi;
 import it.water.documents.manager.model.Document;
+import it.water.documents.manager.model.Folder;
 import it.water.documents.manager.service.rest.DocumentControllerImpl;
+import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 
 /**
@@ -19,6 +26,9 @@ import java.io.InputStream;
  */
 @RestController
 public class DocumentsManagerSpringRestControllerImpl extends DocumentControllerImpl implements DocumentsManagerSpringRestApi {
+    private static Logger logger = LoggerFactory.getLogger(DocumentsManagerSpringRestControllerImpl.class);
+    @Autowired
+    private HttpServletResponse httpServletResponse;
 
     @Override
     public Document save(Document document, MultipartFile multipartFile) {
@@ -76,9 +86,95 @@ public class DocumentsManagerSpringRestControllerImpl extends DocumentController
     }
 
     @Override
+    public Object fetchContent(String path, String fileName) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object fetchContent(long documentId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object fetchContent(String documentUID) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void fetchContentStream(String path, String fileName) {
+        streamDownload(getDocumentApi().fetchDocumentContentByPath(path, fileName));
+    }
+
+    @Override
+    public void fetchContentStream(long documentId) {
+        streamDownload(getDocumentApi().fetchDocumentContent(documentId));
+    }
+
+    @Override
+    public void fetchContentStream(String documentUID) {
+        streamDownload(getDocumentApi().fetchDocumentContentByUID(documentUID));
+    }
+
+    @Override
     @SuppressWarnings("java:S1185") //disabling sonar because spring needs to override this method
     public PaginableResult<Document> findAll() {
         return super.findAll();
     }
 
+    @Override
+    @SuppressWarnings("java:S1185") //disabling sonar because spring needs to override this method
+    public Folder saveFolder(Folder folder) {
+        return super.saveFolder(folder);
+    }
+
+    @Override
+    @SuppressWarnings("java:S1185") //disabling sonar because spring needs to override this method
+    public Folder updateFolder(Folder folder) {
+        return super.updateFolder(folder);
+    }
+
+    @Override
+    @SuppressWarnings("java:S1185") //disabling sonar because spring needs to override this method
+    public Folder findFolder(long id) {
+        return super.findFolder(id);
+    }
+
+    @Override
+    @SuppressWarnings("java:S1185") //disabling sonar because spring needs to override this method
+    public PaginableResult<Folder> findAllFolders() {
+        return super.findAllFolders();
+    }
+
+    @Override
+    @SuppressWarnings("java:S1185") //disabling sonar because spring needs to override this method
+    public void removeFolder(long id) {
+        super.removeFolder(id);
+    }
+
+    /**
+     * We override the logic of spring supporting document download
+     *
+     * @param document
+     * @return
+     */
+
+    protected void streamDownload(Document document) {
+        InputStream inputStream = document.getDocumentContentInputStream();
+        try (OutputStream outputStream = httpServletResponse.getOutputStream()) {
+            httpServletResponse.setContentType(document.getContentType());
+            httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\"" + document.getFileName() + "\"");
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.flush();
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    private DocumentApi getDocumentApi() {
+        return (DocumentApi) this.getEntityService();
+    }
 }

@@ -10,5 +10,6 @@ import it.water.documents.manager.model.Document;
  *
  */
 public interface DocumentRepository extends BaseRepository<Document> {
-
+    Document findByPath(String path, String fileName);
+    Document findByUid(String uid);
 }

@@ -8,8 +8,8 @@ Feature: Check DocumentsManager Rest Api Response
     Given header Accept = 'application/json'
     Given url serviceBaseUrl+'/water/documents'
     # ---- Add entity fields here -----
-    And multipart file documentContent = { read: 'classpath:upload/testFile.txt', filename: 'testFile.txt', contentType: 'application/txt' }
-    And multipart field data = { "path": "/myPath","fileName": "prova.txt", "uid": "234123123", "contentType": "application/text"}
+    And multipart file documentContent = { read: 'classpath:upload/testFile.txt', filename: 'testFile.txt', contentType: 'text/plain' }
+    And multipart field data = { "path": "/myPath","fileName": "prova.txt", "uid": "234123123", "contentType": "text/plain"}
     # ---------------------------------
     When method POST
     Then status 200
@@ -23,18 +23,60 @@ Feature: Check DocumentsManager Rest Api Response
         "path": '/myPath',
         "fileName": 'prova.txt',
         "uid":"234123123",
-        "contentType":"application/text"
+        "contentType":"text/plain"
        }
     """
     * def entityId = response.id
+
+    # --------------- FETCH FILE -------------------------
+
+    Given url serviceBaseUrl+'/water/documents/content?path=/myPath&fileName=prova.txt'
+    # ---------------------------------
+    When method GET
+    Then status 200
+    # ---- Matching required response json ----
+    And match header Content-Type contains 'text/plain'
+    And match responseBytes != null
+    * def expected = read('classpath:upload/testFile.txt')
+    * def downloadedText = new java.lang.String(responseBytes)
+    Then status 200
+    And match downloadedText == expected
+
+    # --------------- FETCH FILE BY ID-------------------------
+
+    Given url serviceBaseUrl+'/water/documents/content/id/'+entityId
+    # ---------------------------------
+    When method GET
+    Then status 200
+    # ---- Matching required response json ----
+    And match header Content-Type contains 'text/plain'
+    And match responseBytes != null
+    * def expected = read('classpath:upload/testFile.txt')
+    * def downloadedText = new java.lang.String(responseBytes)
+    Then status 200
+    And match downloadedText == expected
+
+    # --------------- FETCH FILE BY UID-------------------------
+
+    Given url serviceBaseUrl+'/water/documents/content/uid/234123123'
+    # ---------------------------------
+    When method GET
+    Then status 200
+    # ---- Matching required response json ----
+    And match header Content-Type contains 'text/plain'
+    And match responseBytes != null
+    * def expected = read('classpath:upload/testFile.txt')
+    * def downloadedText = new java.lang.String(responseBytes)
+    Then status 200
+    And match downloadedText == expected
     
     # --------------- UPDATE -----------------------------
 
-    And header Accept = 'application/json'
+    Given header Accept = 'application/json'
     Given url serviceBaseUrl+'/water/documents'
     # ---- Add entity fields here ----
-    And multipart file documentContent = { read: 'classpath:upload/testFile.txt', filename: 'testFile.txt', contentType: 'application/txt' }
-    And multipart field data = { "id":"#(entityId)","path": "/myPath","fileName": "prova1.txt", "uid": "234123123", "contentType": "application/text"}
+    And multipart file documentContent = { read: 'classpath:upload/testFile.txt', filename: 'testFile.txt', contentType: 'text/plain' }
+    And multipart field data = { "id":"#(entityId)","path": "/myPath","fileName": "prova1.txt", "uid": "234123123", "contentType": "text/plain"}
     # ---------------------------------
     When method PUT
     Then status 200
@@ -48,10 +90,46 @@ Feature: Check DocumentsManager Rest Api Response
       "path": '/myPath',
       "fileName": 'prova1.txt',
       "uid":"234123123",
-      "contentType":"application/text"
+      "contentType":"text/plain"
     }
     """
-  
+
+    # --------------- UPDATE with no content-----------------------------
+
+    Given header Accept = 'application/json'
+    Given url serviceBaseUrl+'/water/documents'
+    # ---- Add entity fields here ----
+    And multipart field data = { "id":"#(entityId)","entityVersion":2,"path": "/myPath","fileName": "prova1.txt", "uid": "234123123", "contentType": "text/plain"}
+    # ---------------------------------
+    When method PUT
+    Then status 200
+    # ---- Matching required response json ----
+    And match response ==
+      """
+    { "id": #number,
+    "entityVersion":3,
+    "entityCreateDate":'#number',
+    "entityModifyDate":'#number',
+    "path": '/myPath',
+    "fileName": 'prova1.txt',
+    "uid":"234123123",
+    "contentType":"text/plain"
+    }
+    """
+    # --------------- FETCH AGAIN FILE WITH NEW NAME -------------------------
+
+    Given url serviceBaseUrl+'/water/documents/content?path=/myPath&fileName=prova1.txt'
+    # ---------------------------------
+    When method GET
+    Then status 200
+    # ---- Matching required response json ----
+    And match header Content-Type contains 'text/plain'
+    And match responseBytes != null
+    * def expected = read('classpath:upload/testFile.txt')
+    * def downloadedText = new java.lang.String(responseBytes)
+    Then status 200
+    And match downloadedText == expected
+
   # --------------- FIND -----------------------------
 
     Given header Content-Type = 'application/json'
@@ -64,13 +142,13 @@ Feature: Check DocumentsManager Rest Api Response
     And match response ==
     """
     { "id": #number,
-      "entityVersion":2,
+      "entityVersion":3,
       "entityCreateDate":'#number',
       "entityModifyDate":'#number',
       "path": '/myPath',
       "fileName": 'prova1.txt',
       "uid":"234123123",
-      "contentType":"application/text"
+      "contentType":"text/plain"
     }
     """
     
@@ -84,13 +162,13 @@ Feature: Check DocumentsManager Rest Api Response
     And match response.results contains
     """
       { "id": #number,
-      "entityVersion":2,
+      "entityVersion":3,
       "entityCreateDate":'#number',
       "entityModifyDate":'#number',
       "path": '/myPath',
       "fileName": 'prova1.txt',
       "uid":"234123123",
-      "contentType":"application/text"
+      "contentType":"text/plain"
       }
     """
   

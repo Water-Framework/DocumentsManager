@@ -1,7 +1,9 @@
 package it.water.documents.manager.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import it.water.core.api.entity.owned.OwnedChildResource;
 import it.water.core.api.entity.shared.SharedEntity;
@@ -74,5 +76,6 @@ public class Folder extends AbstractJpaEntity implements ProtectedEntity, Shared
     @Setter
     @Getter
     @OneToMany(mappedBy = "parent")
+    @JsonIgnore
     private Set<Folder> children = new HashSet<>();
 }
