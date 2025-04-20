@@ -1,0 +1,9 @@
+{
+    "generator-water": {
+        "inner-project": true,
+        "project-type": "model",
+        "projectName": "DocumentsManager",
+        "projectGroupId": "it.water.documents.manager",
+        "projectVersion": "project.waterVersion"
+    }
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Save New DocumentsManager entity
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/water/documents
+  body: multipartForm
+  auth: bearer
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+auth:bearer {
+  token: eyJraWQiOiIiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImxvZ2dlZEVudGl0eUlkIjoxLCJyb2xlcyI6W10sImlzcyI6Iml0LndhdGVyLmNvcmUuYXBpLm1vZGVsLlVzZXIiLCJpc0FkbWluIjp0cnVlLCJleHAiOjE3NDUxMzY4OTB9.Kk-_42A3Gqn2mhXZ2V0LeRpu09YHj8pdVAJ2ziseSC3DwgyrncVS-302NbFet5GkcYaScAIDeLxTFpOQo7tS_ncyG_bd5CnCtLgBP7ad0OBdTQfy3AYurAr11JKp_4l6HIrchjDSg5YaX49eVqGAZiOwpo1HWVs7WMcqnQx4XnVo8QN9_-jm1oxKwFb4Vx3nyC1qlyVR2mxUk5uj0vORCISGi5VIR1Hz6ORdZFx2Wthe6A0Fw2P496fLTAWjFoNF_0x5VF-Sb7EKfckdN9jTwkkzLUnt5ZNNNCtnJdQlqmEZs6Tu3nHHy1rIgSAKDyRLy05Z2gRBhGOCi-0X605WWQ
+}
+
+body:json {
+  { 
+    "path": "/prova",
+    "content-type":"txtFile"
+  }
+}
+
+body:multipart-form {
+  data: {"path":"//myPath","fileName":"prova.txt","uid":"234123123","contentType":"application/text"} @contentType(application/json)
+  documentContent: @file(/Users/aristide-cittadino/Documents/github-recovery-codes.txt) @contentType(application/text)
+}

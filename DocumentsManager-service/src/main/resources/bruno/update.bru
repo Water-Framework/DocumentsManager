@@ -1,0 +1,18 @@
+meta {
+  name: Update DocumentsManager entity
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:8080/water/documents
+  body: json
+  auth: none
+}
+
+body:json {
+  { 
+    "id":1,
+    "exampleField": "exampleField1"
+  }
+}
