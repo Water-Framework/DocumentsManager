@@ -15,20 +15,18 @@
  */
 
 package it.water.documents.manager.service.rest.spring;
-import it.water.documents.manager.api.rest.*;
-import it.water.documents.manager.model.*;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import it.water.core.api.model.PaginableResult;
 import it.water.core.api.service.rest.FrameworkRestApi;
 import it.water.core.api.service.rest.WaterJsonView;
+import it.water.documents.manager.api.rest.DocumentsManagerRestApi;
+import it.water.documents.manager.model.Document;
 import it.water.service.rest.api.security.LoggedIn;
-import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.InputStream;
 
 /**
  * @Author Aristide Cittadino
@@ -39,14 +37,14 @@ import java.io.InputStream;
 @FrameworkRestApi
 public interface DocumentsManagerSpringRestApi extends DocumentsManagerRestApi {
     @LoggedIn
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(WaterJsonView.Public.class)
-    Document save(@RequestPart(Document.DOCUMENT_ENTITY_HTTP_PART_NAME) Document document,@RequestPart(value=Document.DOCUMENT_CONTENT_HTTP_PART_NAME) MultipartFile file);
+    Document save(@RequestPart(Document.DOCUMENT_ENTITY_HTTP_PART_NAME) Document document, @RequestPart(value = Document.DOCUMENT_CONTENT_HTTP_PART_NAME) MultipartFile file);
 
     @LoggedIn
     @PutMapping(consumes = "multipart/form-data")
     @JsonView(WaterJsonView.Public.class)
-    Document update(@RequestPart(Document.DOCUMENT_ENTITY_HTTP_PART_NAME) Document document,@RequestPart(value=Document.DOCUMENT_CONTENT_HTTP_PART_NAME,required = false) MultipartFile file);
+    Document update(@RequestPart(Document.DOCUMENT_ENTITY_HTTP_PART_NAME) Document document, @RequestPart(value = Document.DOCUMENT_CONTENT_HTTP_PART_NAME, required = false) MultipartFile file);
 
     @LoggedIn
     @GetMapping("/{id}")

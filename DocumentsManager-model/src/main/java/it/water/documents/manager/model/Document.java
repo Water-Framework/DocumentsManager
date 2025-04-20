@@ -24,7 +24,7 @@ import java.io.InputStream;
  */
 //JPA
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"path","fileName"})) //example of unique constraint
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"path", "fileName"})) //example of unique constraint
 @Access(AccessType.FIELD)
 //Lombok
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

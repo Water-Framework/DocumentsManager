@@ -53,7 +53,7 @@ public class DocumentsManagerSpringRestControllerImpl extends DocumentController
 
     @Override
     @SuppressWarnings("java:S1185") //disabling sonar because spring needs to override this method
-    public Document update(Document entity,InputStream file) {
+    public Document update(Document entity, InputStream file) {
         return super.update(entity);
     }
 

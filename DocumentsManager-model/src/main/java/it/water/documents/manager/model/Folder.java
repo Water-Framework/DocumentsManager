@@ -18,7 +18,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -68,7 +67,7 @@ public class Folder extends AbstractJpaEntity implements ProtectedEntity, Shared
 
     @Setter
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private Folder parent;
 

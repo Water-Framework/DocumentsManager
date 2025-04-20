@@ -1,20 +1,15 @@
 package it.water.documents.manager.service;
 
 import it.water.core.api.registry.filter.ComponentFilterBuilder;
-import it.water.core.api.repository.query.Query;
 import it.water.core.interceptors.annotations.FrameworkComponent;
 import it.water.core.interceptors.annotations.Inject;
-import it.water.documents.manager.api.DocumentRepository;
 import it.water.documents.manager.api.FolderRepository;
 import it.water.documents.manager.api.FolderSystemApi;
 import it.water.documents.manager.api.integration.DocumentRepositoryIntegrationClient;
-import it.water.documents.manager.model.Document;
 import it.water.documents.manager.model.Folder;
 import it.water.repository.service.BaseEntitySystemServiceImpl;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.InputStream;
 
 
 /**

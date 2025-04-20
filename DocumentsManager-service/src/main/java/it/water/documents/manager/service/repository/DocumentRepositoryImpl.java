@@ -63,7 +63,7 @@ public class DocumentRepositoryImpl extends WaterJpaRepositoryImpl<Document> imp
     }
 
     void checkDocumentRepositoryComponentNotNull() {
-        //if (documentRepositoryIntegrationClient == null)
-          //  throw new NoDocumentRepositoryClientInstalled();
+        if (documentRepositoryIntegrationClient == null)
+            throw new NoDocumentRepositoryClientInstalled();
     }
 }
