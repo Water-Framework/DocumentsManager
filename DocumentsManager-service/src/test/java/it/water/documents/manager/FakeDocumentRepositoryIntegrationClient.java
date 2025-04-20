@@ -41,7 +41,9 @@ public class FakeDocumentRepositoryIntegrationClient implements DocumentReposito
         String oldFullPath = oldPath + "/" + fileName;
         String newFullPath = newPath + "/" + fileName;
         byte[] fileContent = storage.get(oldFullPath);
-        storage.put(newFullPath, fileContent);
+        if (fileContent != null) {
+            storage.put(newFullPath, fileContent);
+        }
     }
 
     @Override

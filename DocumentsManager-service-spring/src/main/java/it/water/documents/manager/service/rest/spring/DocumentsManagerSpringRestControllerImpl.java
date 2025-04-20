@@ -44,11 +44,13 @@ public class DocumentsManagerSpringRestControllerImpl extends DocumentController
     }
 
     @Override
+    @SuppressWarnings("java:S1185") //disabling sonar because spring needs to override this method
     public Document save(Document entity, InputStream file) {
         return super.save(entity, file);
     }
 
     @Override
+    @SuppressWarnings("java:S1185") //disabling sonar because spring needs to override this method
     public Document update(Document document, MultipartFile multipartFile) {
         try {
             InputStream inputStream = null;

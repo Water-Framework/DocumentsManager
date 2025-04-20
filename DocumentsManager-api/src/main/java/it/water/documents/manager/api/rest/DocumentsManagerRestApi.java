@@ -16,7 +16,6 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.InputStream;
 
 /**
@@ -57,7 +56,7 @@ public interface DocumentsManagerRestApi extends RestApi {
             @ApiResponse(code = 422, message = "Duplicated Entity"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    Document update(@Multipart(Document.DOCUMENT_ENTITY_HTTP_PART_NAME) Document document,@Multipart(value = Document.DOCUMENT_CONTENT_HTTP_PART_NAME,required = false) InputStream file);
+    Document update(@Multipart(Document.DOCUMENT_ENTITY_HTTP_PART_NAME) Document document, @Multipart(value = Document.DOCUMENT_CONTENT_HTTP_PART_NAME, required = false) InputStream file);
 
 
     @LoggedIn
@@ -90,7 +89,7 @@ public interface DocumentsManagerRestApi extends RestApi {
             @ApiResponse(code = 422, message = "Duplicated Entity"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    //returning Object to be cross framework and cross technology
+        //returning Object to be cross framework and cross technology
     Object fetchContent(@QueryParam("path") String path, @QueryParam("fileName") String fileName);
 
     @LoggedIn
@@ -107,7 +106,7 @@ public interface DocumentsManagerRestApi extends RestApi {
             @ApiResponse(code = 422, message = "Duplicated Entity"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    //returning Object to be cross framework and cross technology
+        //returning Object to be cross framework and cross technology
     Object fetchContent(@PathParam("documentId") long documentId);
 
     @LoggedIn
@@ -124,7 +123,7 @@ public interface DocumentsManagerRestApi extends RestApi {
             @ApiResponse(code = 422, message = "Duplicated Entity"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    //returning Object to be cross framework and cross technology
+        //returning Object to be cross framework and cross technology
     Object fetchContent(@PathParam("documentUID") String documentUID);
 
 
