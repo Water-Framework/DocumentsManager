@@ -284,7 +284,7 @@ class DocumentApiTest implements Service {
     }
     
     private Document createDocument(int seed){
-        Document entity = new Document("exampleField"+seed,"fileName","uid","contentType",0L);
+        Document entity = new Document("exampleField"+seed,"fileName","uid"+seed,"contentType",0L);
         //todo add more fields here...
         return entity;
     }

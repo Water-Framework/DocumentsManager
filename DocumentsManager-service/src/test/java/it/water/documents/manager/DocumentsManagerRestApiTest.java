@@ -31,7 +31,7 @@ public class DocumentsManagerRestApiTest implements Service {
     
     @Karate.Test
     Karate restInterfaceTest() {
-        return Karate.run("classpath:karate")
+        return Karate.run("classpath:karate/documents.feature")
                 .systemProperty("webServerPort", TestRuntimeInitializer.getInstance().getRestServerPort())
                 .systemProperty("host", "localhost")
                 .systemProperty("protocol", "http");
