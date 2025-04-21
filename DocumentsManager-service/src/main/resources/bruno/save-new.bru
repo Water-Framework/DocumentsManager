@@ -26,6 +26,6 @@ body:json {
 }
 
 body:multipart-form {
-  data: {"path":"//myPath","fileName":"prova.txt","uid":"234123123","contentType":"application/text"} @contentType(application/json)
+  data: {"path":"/myPath","fileName":"prova.txt","uid":"234123123","contentType":"application/text"} @contentType(application/json)
   documentContent: @file(/Users/aristide-cittadino/Documents/github-recovery-codes.txt) @contentType(application/text)
 }
