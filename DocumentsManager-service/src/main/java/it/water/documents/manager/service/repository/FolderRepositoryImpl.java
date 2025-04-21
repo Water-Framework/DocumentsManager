@@ -31,7 +31,7 @@ public class FolderRepositoryImpl extends WaterJpaRepositoryImpl<Folder> impleme
         logger.debug("Persisting folder {}", entity);
         return this.tx(Transactional.TxType.REQUIRED, entityManager -> {
             Folder savedFolder = super.persist(entity, runnable);
-            this.documentRepositoryIntegrationClient.addFolder(savedFolder.getPath());
+            this.documentRepositoryIntegrationClient.addFolder(savedFolder.getPath(), savedFolder.getName());
             return savedFolder;
         });
     }
@@ -41,9 +41,14 @@ public class FolderRepositoryImpl extends WaterJpaRepositoryImpl<Folder> impleme
     public Folder update(Folder entity, Runnable runnable) {
         logger.debug("Updating folder {}", entity);
         return this.tx(Transactional.TxType.REQUIRED, entityManager -> {
-            String oldPath = find(entity.getId()).getPath();
+            Folder f = find(entity.getId());
+            String oldPath = f.getPath();
+            String oldName = f.getName();
             Folder savedDocument = super.update(entity, runnable);
-            this.documentRepositoryIntegrationClient.renameFolder(oldPath, entity.getPath());
+            if (!oldName.equals(savedDocument.getName()))
+                this.documentRepositoryIntegrationClient.renameFolder(entity.getPath(),oldName, entity.getName());
+            if(!oldPath.equals(savedDocument.getPath()))
+                this.documentRepositoryIntegrationClient.moveFolder(oldPath,entity.getPath());
             return savedDocument;
         });
     }
@@ -55,7 +60,7 @@ public class FolderRepositoryImpl extends WaterJpaRepositoryImpl<Folder> impleme
         this.txExpr(Transactional.TxType.REQUIRED, entityManager -> {
             Folder folder = this.find(id);
             super.remove(id, runnable);
-            this.documentRepositoryIntegrationClient.removeFolder(folder.getPath());
+            this.documentRepositoryIntegrationClient.removeFolder(folder.getFullPath());
         });
     }
 }

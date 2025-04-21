@@ -44,7 +44,7 @@ public interface DocumentRepositoryIntegrationClient {
      *
      * @param path
      */
-    void addFolder(String path);
+    void addFolder(String path,String folderName);
 
 
     /**
@@ -71,12 +71,12 @@ public interface DocumentRepositoryIntegrationClient {
     void removeFolder(String path);
 
     /**
-     * Renames a folder
      *
-     * @param oldPath
      * @param path
+     * @param oldName
+     * @param newName
      */
-    void renameFolder(String oldPath, String path);
+    void renameFolder(String path,String oldName,String newName);
 
     /**
      * @param oldPath

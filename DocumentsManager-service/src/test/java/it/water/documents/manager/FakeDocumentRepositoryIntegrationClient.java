@@ -2,18 +2,21 @@ package it.water.documents.manager;
 
 import it.water.core.interceptors.annotations.FrameworkComponent;
 import it.water.documents.manager.api.integration.DocumentRepositoryIntegrationClient;
+import org.eclipse.jetty.util.ConcurrentHashSet;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @FrameworkComponent
 public class FakeDocumentRepositoryIntegrationClient implements DocumentRepositoryIntegrationClient {
 
     private final Map<String, byte[]> storage = new ConcurrentHashMap<>();
+    private final Set<String> folders = new ConcurrentHashSet<>();
 
     @Override
     public void addNewFile(String path, InputStream sourceFile) {
@@ -61,12 +64,14 @@ public class FakeDocumentRepositoryIntegrationClient implements DocumentReposito
 
     @Override
     public void moveFolder(String oldPath, String newPath) {
-        //do nothing
+        folders.remove(oldPath);
+        folders.add(newPath);
     }
 
     @Override
-    public void addFolder(String path) {
-        //do nothing
+    public void addFolder(String path, String folderName) {
+        String fullPath = path + "/" + folderName;
+        folders.add(fullPath);
     }
 
     @Override
@@ -82,19 +87,15 @@ public class FakeDocumentRepositoryIntegrationClient implements DocumentReposito
 
     @Override
     public void removeFolder(String path) {
-        storage.keySet().removeIf(key -> key.startsWith(path));
+        folders.remove(path);
     }
 
     @Override
-    public void renameFolder(String oldPath, String newPath) {
-        storage.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(oldPath))
-                .toList() // copy to avoid concurrent modification
-                .forEach(entry -> {
-                    String newKey = entry.getKey().replaceFirst(oldPath, newPath);
-                    storage.put(newKey, entry.getValue());
-                    storage.remove(entry.getKey());
-                });
+    public void renameFolder(String path, String oldName, String newName) {
+        String oldPath = path + "/" + oldName;
+        String newPath = path + "/" + newName;
+        folders.remove(oldPath);
+        folders.add(newPath);
     }
 
 }

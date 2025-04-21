@@ -213,6 +213,7 @@ class FolderApiTest implements Service {
         Folder secondEntity = createFolder(2);
         this.folderApi.save(secondEntity);
         entity.setPath("exampleField2");
+        entity.setName("exampleField2");
         //cannot update an entity colliding with other entity on unique constraint
         Assertions.assertThrows(DuplicateEntityException.class, () -> this.folderApi.update(entity));
     }
@@ -223,7 +224,7 @@ class FolderApiTest implements Service {
     @Test
     @Order(9)
     void updateShouldFailOnValidationFailure() {
-        Folder newEntity = new Folder("<script>function(){alert('ciao')!}</script>", 0L);
+        Folder newEntity = new Folder("<script>function(){alert('ciao')!}</script>", "name",0L);
         Assertions.assertThrows(ValidationException.class, () -> this.folderApi.save(newEntity));
     }
 
@@ -279,8 +280,7 @@ class FolderApiTest implements Service {
     }
 
     private Folder createFolder(int seed) {
-        Folder entity = new Folder("exampleField" + seed, 0L);
-        //todo add more fields here...
+        Folder entity = new Folder("exampleField" + seed,"exampleField" + seed, 0L);
         return entity;
     }
 }

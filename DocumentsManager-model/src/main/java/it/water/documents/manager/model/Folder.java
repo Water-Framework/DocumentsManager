@@ -28,7 +28,7 @@ import java.util.Set;
  */
 //JPA
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"path"})) //example of unique constraint
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"path","name"})) //example of unique constraint
 @Access(AccessType.FIELD)
 //Lombok
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,7 +36,7 @@ import java.util.Set;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @ToString
-@EqualsAndHashCode(of = {"id", "path"})
+@EqualsAndHashCode(of = {"id", "path","name"})
 //Actions and default roles access
 @AccessControl(availableActions = {CrudActions.SAVE, CrudActions.UPDATE, CrudActions.FIND, CrudActions.FIND_ALL, CrudActions.REMOVE},
         rolesPermissions = {
@@ -61,6 +61,14 @@ public class Folder extends AbstractJpaEntity implements ProtectedEntity, Shared
     @JsonView(WaterJsonView.Extended.class)
     private String path;
 
+    @NoMalitiusCode
+    @NotNull
+    @NotNullOnPersist
+    @NonNull
+    @Setter
+    @JsonView(WaterJsonView.Extended.class)
+    private String name;
+
     //Owner user id of the entity
     @Setter
     @NonNull
@@ -78,4 +86,10 @@ public class Folder extends AbstractJpaEntity implements ProtectedEntity, Shared
     @OneToMany(mappedBy = "parent")
     @JsonIgnore
     private Set<Folder> children = new HashSet<>();
+
+    @Transient
+    @JsonIgnore
+    public String getFullPath() {
+        return this.path + "/" + this.name;
+    }
 }

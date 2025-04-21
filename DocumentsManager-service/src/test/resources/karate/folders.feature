@@ -9,7 +9,7 @@ Feature: Check Folders Rest Api Response
     And header Accept = 'application/json'
     Given url serviceBaseUrl+'/water/documents/folders'
     # ---- Add entity fields here -----
-    And request { "path": "/firstPath" }
+    And request { "path": "/","name":"firstPath" }
     # ---------------------------------
     When method POST
     Then status 200
@@ -20,7 +20,8 @@ Feature: Check Folders Rest Api Response
         "entityVersion":1,
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
-        "path": "/firstPath"
+        "path": "/",
+        "name": "firstPath"
        }
     """
     * def entityId = response.id
@@ -31,7 +32,7 @@ Feature: Check Folders Rest Api Response
     And header Accept = 'application/json'
     Given url serviceBaseUrl+'/water/documents/folders'
     # ---- Add entity fields here -----
-    And request { "id":"#(entityId)","entityVersion":1,"path": "/rootPath"}
+    And request { "id":"#(entityId)","entityVersion":1,"path": "/", "name":"rootPath"}
     # ---------------------------------
     When method PUT
     Then status 200
@@ -42,7 +43,8 @@ Feature: Check Folders Rest Api Response
         "entityVersion":2,
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
-        "path": "/rootPath"
+        "path": "/",
+        "name": "rootPath"
        }
     """
   
@@ -61,7 +63,8 @@ Feature: Check Folders Rest Api Response
         "entityVersion":2,
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
-        "path": "/rootPath"
+        "path": "/",
+        "name": "rootPath"
        }
     """
     
