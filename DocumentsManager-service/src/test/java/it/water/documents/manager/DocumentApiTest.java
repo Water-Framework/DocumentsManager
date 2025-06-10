@@ -73,6 +73,7 @@ class DocumentApiTest implements Service {
     private RoleManager roleManager;
 
     //admin user
+    @SuppressWarnings("unused")
     private it.water.core.api.model.User adminUser;
     private it.water.core.api.model.User documentsmanagerManagerUser;
     private it.water.core.api.model.User documentsmanagerViewerUser;

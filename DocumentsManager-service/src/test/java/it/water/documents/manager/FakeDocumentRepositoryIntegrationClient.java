@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FakeDocumentRepositoryIntegrationClient implements DocumentRepositoryIntegrationClient {
 
     private final Map<String, byte[]> storage = new ConcurrentHashMap<>();
+    @SuppressWarnings("deprecation")
     private final Set<String> folders = new ConcurrentHashSet<>();
 
     @Override

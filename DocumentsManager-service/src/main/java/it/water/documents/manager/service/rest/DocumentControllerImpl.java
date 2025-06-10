@@ -25,7 +25,7 @@ import java.io.InputStream;
  */
 @FrameworkRestController(referredRestApi = DocumentsManagerRestApi.class)
 public class DocumentControllerImpl extends BaseEntityRestApi<Document> implements DocumentsManagerRestApi {
-    @SuppressWarnings("java:S1068") //still mantain the variable even if not used
+    @SuppressWarnings({ "java:S1068", "unused" }) //still mantain the variable even if not used
     private static Logger log = LoggerFactory.getLogger(DocumentControllerImpl.class.getName());
 
     @Inject

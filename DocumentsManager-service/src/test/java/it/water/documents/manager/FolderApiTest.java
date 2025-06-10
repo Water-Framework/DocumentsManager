@@ -69,6 +69,7 @@ class FolderApiTest implements Service {
     private RoleManager roleManager;
 
     //admin user
+    @SuppressWarnings("unused")
     private it.water.core.api.model.User adminUser;
     private it.water.core.api.model.User folderManagerUser;
     private it.water.core.api.model.User folderViewerUser;

@@ -1,9 +1,7 @@
 package it.water.documents.manager.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import it.water.core.api.entity.owned.OwnedChildResource;
 import it.water.core.api.entity.shared.SharedEntity;
@@ -36,7 +34,7 @@ import java.util.Set;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @ToString
-@EqualsAndHashCode(of = {"id", "path","name"})
+@EqualsAndHashCode(of = {"path","name"},callSuper = true)
 //Actions and default roles access
 @AccessControl(availableActions = {CrudActions.SAVE, CrudActions.UPDATE, CrudActions.FIND, CrudActions.FIND_ALL, CrudActions.REMOVE},
         rolesPermissions = {

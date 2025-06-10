@@ -32,7 +32,7 @@ import java.io.InputStream;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @ToString
-@EqualsAndHashCode(of = {"id", "path", "filename"})
+@EqualsAndHashCode(of = {"path", "fileName"}, callSuper = true)
 //Actions and default roles access
 @AccessControl(availableActions = {CrudActions.SAVE, CrudActions.UPDATE, CrudActions.FIND, CrudActions.FIND_ALL, CrudActions.REMOVE},
         rolesPermissions = {
