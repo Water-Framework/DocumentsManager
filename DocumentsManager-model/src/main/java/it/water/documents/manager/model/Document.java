@@ -11,6 +11,7 @@ import it.water.core.permission.annotations.DefaultRoleAccess;
 import it.water.core.validation.annotations.NoMalitiusCode;
 import it.water.core.validation.annotations.NotNullOnPersist;
 import it.water.repository.jpa.model.AbstractJpaEntity;
+import it.water.repository.jpa.model.AbstractJpaExpandableEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -43,7 +44,7 @@ import java.io.InputStream;
                 //Editor can do anything but remove
                 @DefaultRoleAccess(roleName = Document.DEFAULT_EDITOR_ROLE, actions = {CrudActions.SAVE, CrudActions.UPDATE, CrudActions.FIND, CrudActions.FIND_ALL})
         })
-public class Document extends AbstractJpaEntity implements ProtectedEntity, SharedEntity {
+public class Document extends AbstractJpaExpandableEntity implements ProtectedEntity, SharedEntity {
 
     public static final String DEFAULT_MANAGER_ROLE = "documentsManager";
     public static final String DEFAULT_VIEWER_ROLE = "documentsViewer";

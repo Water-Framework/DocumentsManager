@@ -1,8 +1,10 @@
 package it.water.documents.manager.api.integration;
 
+import it.water.core.api.service.Service;
+
 import java.io.InputStream;
 
-public interface DocumentRepositoryIntegrationClient {
+public interface DocumentRepositoryIntegrationClient extends Service {
     /**
      * Adds new file into the specified path (The resource is identified by the pair resourceClassName-resourceId)
      *

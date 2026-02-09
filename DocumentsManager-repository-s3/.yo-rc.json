@@ -1,0 +1,9 @@
+{
+    "generator-water": {
+        "inner-project": true,
+        "project-type": "custom",
+        "projectName": "DocumentsManager-repository-s3",
+        "projectGroupId": "it.water.documents.manager",
+        "projectVersion": "project.waterVersion"
+    }
+}
