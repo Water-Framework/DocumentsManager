@@ -21,7 +21,9 @@ Feature: Check Folders Rest Api Response
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
         "path": "/",
-        "name": "firstPath"
+        "name": "firstPath",
+        "categoryIds": #null,
+        "tagIds": #null
        }
     """
     * def entityId = response.id
@@ -44,10 +46,12 @@ Feature: Check Folders Rest Api Response
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
         "path": "/",
-        "name": "rootPath"
+        "name": "rootPath",
+        "categoryIds": #null,
+        "tagIds": #null
        }
     """
-  
+
   # --------------- FIND -----------------------------
 
     Given header Content-Type = 'application/json'
@@ -64,10 +68,12 @@ Feature: Check Folders Rest Api Response
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
         "path": "/",
-        "name": "rootPath"
+        "name": "rootPath",
+        "categoryIds": #null,
+        "tagIds": #null
        }
     """
-    
+
   # --------------- FIND ALL -----------------------------
 
     Given header Content-Type = 'application/json'
