@@ -23,9 +23,7 @@ Feature: Check DocumentsManager Rest Api Response
         "path": '/myPath',
         "fileName": 'prova.txt',
         "uid":"234123123",
-        "contentType":"text/plain",
-        "categoryIds": #null,
-        "tagIds": #null
+        "contentType":"text/plain"
        }
     """
     * def entityId = response.id
@@ -92,9 +90,7 @@ Feature: Check DocumentsManager Rest Api Response
       "path": '/myPath',
       "fileName": 'prova1.txt',
       "uid":"234123123",
-      "contentType":"text/plain",
-      "categoryIds": #null,
-      "tagIds": #null
+      "contentType":"text/plain"
     }
     """
 
@@ -117,9 +113,7 @@ Feature: Check DocumentsManager Rest Api Response
     "path": '/myPath',
     "fileName": 'prova1.txt',
     "uid":"234123123",
-    "contentType":"text/plain",
-    "categoryIds": #null,
-    "tagIds": #null
+    "contentType":"text/plain"
     }
     """
     # --------------- FETCH AGAIN FILE WITH NEW NAME -------------------------
@@ -154,12 +148,10 @@ Feature: Check DocumentsManager Rest Api Response
       "path": '/myPath',
       "fileName": 'prova1.txt',
       "uid":"234123123",
-      "contentType":"text/plain",
-      "categoryIds": #null,
-      "tagIds": #null
+      "contentType":"text/plain"
     }
     """
-
+    
   # --------------- FIND ALL -----------------------------
 
     Given header Content-Type = 'application/json'
@@ -176,12 +168,10 @@ Feature: Check DocumentsManager Rest Api Response
       "path": '/myPath',
       "fileName": 'prova1.txt',
       "uid":"234123123",
-      "contentType":"text/plain",
-      "categoryIds": #null,
-      "tagIds": #null
+      "contentType":"text/plain"
       }
     """
-
+  
   # --------------- DELETE -----------------------------
 
     Given header Content-Type = 'application/json'
