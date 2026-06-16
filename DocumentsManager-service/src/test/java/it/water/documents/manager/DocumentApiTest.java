@@ -283,7 +283,205 @@ class DocumentApiTest implements Service {
         long savedEntityId = savedEntity.getId();
         Assertions.assertThrows(NoResultException.class,() -> this.documentApi.find(savedEntityId));
     }
-    
+
+    // =========================================================
+    // #18 — fetchDocumentContent ownership + path-traversal tests
+    // =========================================================
+
+    /**
+     * #18: fetchDocumentContent succeeds for the owner of the document.
+     * ownerUserId is explicitly set to the logged editor user's id before save.
+     */
+    @Test
+    @Order(20)
+    void fetchDocumentContent_asOwner_succeeds() {
+        TestRuntimeInitializer.getInstance().impersonate(documentsmanagerEditorUser, runtime);
+        long editorId = runtime.getSecurityContext().getLoggedEntityId();
+        Document doc = createDocument(501);
+        doc.setOwnerUserId(editorId);
+        Document saved = Assertions.assertDoesNotThrow(() -> this.documentApi.save(doc));
+        long savedId = saved.getId();
+        // owner must be able to fetch their own document content
+        Assertions.assertDoesNotThrow(() -> this.documentApi.fetchDocumentContent(savedId));
+    }
+
+    /**
+     * #18: fetchDocumentContent throws UnauthorizedException when a non-owner, non-admin user
+     * tries to access a document owned by a different user.
+     */
+    @Test
+    @Order(21)
+    void fetchDocumentContent_asNonOwner_throwsUnauthorized() {
+        // Save as editor with explicit ownerUserId
+        TestRuntimeInitializer.getInstance().impersonate(documentsmanagerEditorUser, runtime);
+        long editorId = runtime.getSecurityContext().getLoggedEntityId();
+        Document doc = createDocument(502);
+        doc.setOwnerUserId(editorId);
+        Document saved = Assertions.assertDoesNotThrow(() -> this.documentApi.save(doc));
+        long savedId = saved.getId();
+
+        // Switch to manager — different user, NOT the owner and NOT sharing
+        TestRuntimeInitializer.getInstance().impersonate(documentsmanagerManagerUser, runtime);
+        Assertions.assertThrows(UnauthorizedException.class,
+                () -> this.documentApi.fetchDocumentContent(savedId));
+    }
+
+    /**
+     * #18: fetchDocumentContent succeeds for admin regardless of ownerUserId.
+     */
+    @Test
+    @Order(22)
+    void fetchDocumentContent_asAdmin_bypass_succeeds() {
+        // Save as editor with explicit ownerUserId
+        TestRuntimeInitializer.getInstance().impersonate(documentsmanagerEditorUser, runtime);
+        long editorId = runtime.getSecurityContext().getLoggedEntityId();
+        Document doc = createDocument(503);
+        doc.setOwnerUserId(editorId);
+        Document saved = Assertions.assertDoesNotThrow(() -> this.documentApi.save(doc));
+        long savedId = saved.getId();
+
+        // Admin can access any document
+        TestRuntimeUtils.impersonateAdmin(componentRegistry);
+        Assertions.assertDoesNotThrow(() -> this.documentApi.fetchDocumentContent(savedId));
+    }
+
+    /**
+     * #18: fetchDocumentContentByUID succeeds for the owner.
+     */
+    @Test
+    @Order(23)
+    void fetchDocumentContentByUID_asOwner_succeeds() {
+        TestRuntimeInitializer.getInstance().impersonate(documentsmanagerEditorUser, runtime);
+        long editorId = runtime.getSecurityContext().getLoggedEntityId();
+        Document doc = createDocument(504);
+        doc.setOwnerUserId(editorId);
+        Document saved = Assertions.assertDoesNotThrow(() -> this.documentApi.save(doc));
+        String uid = saved.getUid();
+        Assertions.assertDoesNotThrow(() -> this.documentApi.fetchDocumentContentByUID(uid));
+    }
+
+    /**
+     * #18: fetchDocumentContentByUID throws UnauthorizedException for a non-owner.
+     */
+    @Test
+    @Order(24)
+    void fetchDocumentContentByUID_asNonOwner_throwsUnauthorized() {
+        TestRuntimeInitializer.getInstance().impersonate(documentsmanagerEditorUser, runtime);
+        long editorId = runtime.getSecurityContext().getLoggedEntityId();
+        Document doc = createDocument(505);
+        doc.setOwnerUserId(editorId);
+        Document saved = Assertions.assertDoesNotThrow(() -> this.documentApi.save(doc));
+        String uid = saved.getUid();
+
+        TestRuntimeInitializer.getInstance().impersonate(documentsmanagerManagerUser, runtime);
+        Assertions.assertThrows(UnauthorizedException.class,
+                () -> this.documentApi.fetchDocumentContentByUID(uid));
+    }
+
+    /**
+     * #18: fetchDocumentContentByPath with ".." in path must throw WaterRuntimeException (path traversal).
+     */
+    @Test
+    @Order(25)
+    void fetchDocumentContentByPath_dotDotInPath_throwsWaterRuntimeException() {
+        TestRuntimeUtils.impersonateAdmin(componentRegistry);
+        Assertions.assertThrows(WaterRuntimeException.class,
+                () -> this.documentApi.fetchDocumentContentByPath("../etc", "passwd"));
+    }
+
+    /**
+     * #18: fetchDocumentContentByPath with ".." in fileName must throw WaterRuntimeException.
+     */
+    @Test
+    @Order(26)
+    void fetchDocumentContentByPath_dotDotInFileName_throwsWaterRuntimeException() {
+        TestRuntimeUtils.impersonateAdmin(componentRegistry);
+        Assertions.assertThrows(WaterRuntimeException.class,
+                () -> this.documentApi.fetchDocumentContentByPath("validPath", "../secret.txt"));
+    }
+
+    /**
+     * #18: a leading "/" is a legal rooted path in this module (documents are stored under rooted
+     * paths by convention, e.g. "/myPath"), so it must NOT be rejected as a traversal attempt — only
+     * ".."/null-byte/backslash/drive-prefix are. A fileName, however, must never contain a path
+     * separator: it names a single file, so "sub/evil.txt" must throw WaterRuntimeException.
+     */
+    @Test
+    @Order(27)
+    void fetchDocumentContentByPath_fileNameWithSeparator_throwsWaterRuntimeException() {
+        TestRuntimeUtils.impersonateAdmin(componentRegistry);
+        Assertions.assertThrows(WaterRuntimeException.class,
+                () -> this.documentApi.fetchDocumentContentByPath("/myPath", "sub/evil.txt"));
+    }
+
+    /**
+     * #18: fetchDocumentContentByPath with backslash-absolute path (leading "\") must throw WaterRuntimeException.
+     */
+    @Test
+    @Order(28)
+    void fetchDocumentContentByPath_backslashAbsolutePath_throwsWaterRuntimeException() {
+        TestRuntimeUtils.impersonateAdmin(componentRegistry);
+        Assertions.assertThrows(WaterRuntimeException.class,
+                () -> this.documentApi.fetchDocumentContentByPath("\\windows\\system32", "file.dll"));
+    }
+
+    /**
+     * #18: fetchDocumentContentByPath with a Windows drive prefix must throw WaterRuntimeException.
+     */
+    @Test
+    @Order(29)
+    void fetchDocumentContentByPath_windowsDrivePrefix_throwsWaterRuntimeException() {
+        TestRuntimeUtils.impersonateAdmin(componentRegistry);
+        Assertions.assertThrows(WaterRuntimeException.class,
+                () -> this.documentApi.fetchDocumentContentByPath("C:/Windows/System32", "file.dll"));
+    }
+
+    /**
+     * #18: fetchDocumentContentByPath with a null byte in path must throw WaterRuntimeException.
+     */
+    @Test
+    @Order(30)
+    void fetchDocumentContentByPath_nullByteInPath_throwsWaterRuntimeException() {
+        TestRuntimeUtils.impersonateAdmin(componentRegistry);
+        // null byte is the classic null-byte injection
+        Assertions.assertThrows(WaterRuntimeException.class,
+                () -> this.documentApi.fetchDocumentContentByPath("valid\0path", "file.txt"));
+    }
+
+    /**
+     * #18: fetchDocumentContentByPath with a null byte in fileName must throw WaterRuntimeException.
+     */
+    @Test
+    @Order(31)
+    void fetchDocumentContentByPath_nullByteInFileName_throwsWaterRuntimeException() {
+        TestRuntimeUtils.impersonateAdmin(componentRegistry);
+        Assertions.assertThrows(WaterRuntimeException.class,
+                () -> this.documentApi.fetchDocumentContentByPath("validPath", "file\0.txt"));
+    }
+
+    /**
+     * #18: fetchDocumentContentByPath with null path is safe (validateStorageComponent returns without
+     * throwing when value is null — the null check is at the start of validateStorageComponent).
+     * The call will then proceed to the repository and may throw a different exception; we just
+     * ensure WaterRuntimeException is NOT thrown for null path alone.
+     */
+    @Test
+    @Order(32)
+    void fetchDocumentContentByPath_nullPath_doesNotThrowTraversalException() {
+        TestRuntimeUtils.impersonateAdmin(componentRegistry);
+        // null path: validateStorageComponent returns safely; subsequent DB call may throw a
+        // different exception (NoResultException / NullPointerException from the repository layer)
+        // — we assert it is NOT a traversal-rejection WaterRuntimeException with "illegal path component"
+        try {
+            this.documentApi.fetchDocumentContentByPath(null, "file.txt");
+        } catch (WaterRuntimeException e) {
+            Assertions.assertFalse(e.getMessage() != null && e.getMessage().contains("illegal path component"),
+                    "null path must not be rejected as a path-traversal attempt");
+        } catch (Exception ignored) {
+            // other exceptions (NoResultException etc.) are acceptable
+        }
+    }
+
     private Document createDocument(int seed){
         Document entity = new Document("exampleField"+seed,"fileName","uid"+seed,"contentType",0L);
         //todo add more fields here...

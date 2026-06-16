@@ -20,6 +20,8 @@ Feature: Check Folders Rest Api Response
         "entityVersion":1,
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
+        "categoryIds": #null,
+        "tagIds": #null,
         "path": "/",
         "name": "firstPath"
        }
@@ -43,6 +45,8 @@ Feature: Check Folders Rest Api Response
         "entityVersion":2,
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
+        "categoryIds": #null,
+        "tagIds": #null,
         "path": "/",
         "name": "rootPath"
        }
@@ -63,6 +67,8 @@ Feature: Check Folders Rest Api Response
         "entityVersion":2,
         "entityCreateDate":'#number',
         "entityModifyDate":'#number',
+        "categoryIds": #null,
+        "tagIds": #null,
         "path": "/",
         "name": "rootPath"
        }
@@ -74,8 +80,8 @@ Feature: Check Folders Rest Api Response
     And header Accept = 'application/json'
     Given url serviceBaseUrl+'/water/documents/folders'
     When method GET
-    Then status 500
-  
+    Then status 200
+
   # --------------- DELETE -----------------------------
 
     Given header Content-Type = 'application/json'
