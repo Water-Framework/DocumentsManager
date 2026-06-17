@@ -30,6 +30,8 @@ dependencies {
     //Encryption
     implementation group: 'org.bouncycastle', name: 'bcmail-jdk15on', version: project.bouncyCastleVersion
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: project.nimbusJoseJwtVersion
+    //#19: real (content-sniffed) MIME type detection for upload validation — tika-core only, NOT tika-parsers
+    implementation group: 'org.apache.tika', name: 'tika-core', version: '2.9.2'
     //Core Water Deps
     implementation group: 'it.water.core', name: 'Core-api', version: project.waterVersion
     implementation group: 'it.water.core', name: 'Core-bundle', version: project.waterVersion

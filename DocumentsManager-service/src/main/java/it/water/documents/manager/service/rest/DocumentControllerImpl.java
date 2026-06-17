@@ -111,9 +111,15 @@ public class DocumentControllerImpl extends BaseEntityRestApi<Document> implemen
      */
     protected Object prepareDownload(Document document) {
         InputStream inputStream = document.getDocumentContentInputStream();
+        // #19: download hardening.
+        //  - Content-Disposition: attachment forces a download (never inline rendering), mitigating
+        //    reflected-content / stored-XSS via a malicious file served from our origin.
+        //  - X-Content-Type-Options: nosniff stops the browser from MIME-sniffing the body and
+        //    overriding the declared Content-Type (e.g. treating a "text/plain" upload as HTML/JS).
         return Response.ok(inputStream)
                 .header("Content-Disposition", "attachment; filename=\"" + document.getFileName() + "\"")
                 .header("Content-Type", document.getContentType())
+                .header("X-Content-Type-Options", "nosniff")
                 .build();
     }
 }

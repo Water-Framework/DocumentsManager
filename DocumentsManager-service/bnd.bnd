@@ -17,7 +17,8 @@ Import-Package: \
     it.water.core.*,\
     it.water.repository.*,\
     it.water.service.rest.*,\
-    it.water.implementation.osgi.*
+    it.water.implementation.osgi.*,\
+    org.apache.tika.*
 Export-Package: \
     it.water.documents.manager.*
 DynamicImport-Package: *
