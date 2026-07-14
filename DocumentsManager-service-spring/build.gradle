@@ -13,6 +13,8 @@ dependencies {
 	implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: "6.1.0"
 	//Core Water Deps
 	implementation group: 'it.water.distribution', name: 'Water-distribution-spring', version: project.waterVersion
+	//needed for the tenant marker (TenantResource) inherited by Document via AbstractJpaExpandableTenantEntity
+	implementation group: 'it.water.core', name: 'Core-api', version: project.waterVersion
 	// JPA Repository
 	implementation 'it.water.repository.jpa:JpaRepository-api:'+project.waterVersion
 	implementation 'it.water.repository.jpa:JpaRepository-spring:'+project.waterVersion

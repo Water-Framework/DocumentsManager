@@ -104,3 +104,9 @@ water.testMode=true
 - All file operations are abstracted, so you can swap out the storage backend without changing business logic.
 - The REST API is cross-framework and can be used from any HTTP client.
 
+## Multitenancy (Company-based)
+
+Documents are tenant-scoped.
+
+- `Document extends AbstractJpaExpandableTenantEntity` → carries `companyId` (auto-assigned from the active company on save; null = global). Tenant filtering is applied automatically by the Api layer.
+
