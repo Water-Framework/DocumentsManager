@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  * Multitenancy "Tassello 4" — behavioral enforcement tests for the tenant filter implemented in
  * {@code BaseEntityServiceImpl} (Api layer) on the {@code Document} entity, which is a
  * {@code TenantResource} (single company, nullable {@code companyId} = global) and is ALSO an
- * {@code OwnedResource} (via {@code SharedEntity}). See {@code multitenancy-analysis-proposal.md}
+ * {@code OwnedResource} (via {@code SharedEntity}). See {@code the `multitenancy-knowledge` skill}
  * &sect;1/&sect;6.
  * <p>
  * Covers:
